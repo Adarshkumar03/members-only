@@ -1,0 +1,9 @@
+extends layout 
+
+block content 
+    form(action="/new", method="post") 
+        label(for="messageText") Message:
+        textarea(name="messageText" id="messageText" cols="30" rows="10")
+        input(type="hidden" name="userId" value=(user._id))
+        br
+        button(type="submit") Submit 

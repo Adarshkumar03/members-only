@@ -1,0 +1,11 @@
+extends layout 
+
+block content 
+    h1 Become a Member
+    p Hint: plural for cat
+    form(action="/membership", method="post") 
+        input(type="text", name="membershipAnswer")
+        input(type="hidden" name="userId" value=(user._id))
+        button Submit Answer
+    if error 
+        p error    

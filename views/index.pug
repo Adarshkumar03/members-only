@@ -1,0 +1,32 @@
+extends layout 
+
+block content 
+  if currentUser
+    if currentUser.isAdmin
+      h1 Welcome Back Admin
+    else 
+      h1 Welcome Back #{currentUser.username} 
+    each message in messages
+      if currentUser.isMember
+        h2 #{message.user}
+      else 
+        h2 Anonymous  
+      p #{message.messageText}
+      if currentUser.isMember
+        p #{format(message.date, {addSuffix: true})}
+      else 
+        p light years ago
+      if currentUser.isAdmin 
+        a(href="/"+message._id+"/delete") Delete Message  
+    a(href="/new") Create Message
+    if !currentUser.isMember
+      a(href="/membership") Become Member      
+    a(href="/log-out") LOG OUT
+
+  else 
+    h1 Home Page
+    p Join
+    a(href="/log-in") Login 
+    a(href="/sign-up") Signup    
+    
+  

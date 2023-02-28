@@ -1,0 +1,16 @@
+extends layout 
+
+block content 
+  h1 Sign Up 
+  form(action="/sign-up" method="POST")
+    label(for="username") Username
+    input(name="username" placeholder="username" type="text" required)
+    label(for="password") Password
+    input(name="password" type="password" required)
+    label(for="password") Confirm Password
+    input(name="confirmPassword" type="password" required)
+    button Sign Up
+  if errors
+    ul
+      for error in errors
+        li!= error.msg  

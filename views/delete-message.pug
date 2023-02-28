@@ -1,0 +1,9 @@
+extends layout 
+
+block content 
+    h2 Do you really want to delete this message 
+    form(method='POST' action='')
+      div.form-group
+        input#castid.form-control(type='hidden',name='messageid', required='true', value=messageid )
+
+      button.btn.btn-primary(type='submit') Delete

@@ -237,6 +237,8 @@ app.get("/log-out", (req, res, next)=>{
       }
       res.redirect("/");
     })
-})
+});
 
-app.listen(3000, () => console.log("app listening on port 3000!"));
+const PORT = process.env.PORT || 3030;
+
+app.listen(PORT, () => console.log("app listening on port 3000!"));

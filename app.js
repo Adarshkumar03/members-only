@@ -7,6 +7,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const distanceInWords = require("date-fns/formatDistanceToNow");
 const { body, validationResult } = require("express-validator");
+var flash = require('connect-flash');
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
@@ -29,6 +30,7 @@ const User = mongoose.model(
 const Message = mongoose.model(
   "Message", 
   new Schema({
+    messageTitle:{type:String, required: true},
     messageText: {type: String, required: true},
     date: {type: Date},
     user: {type: String}
@@ -36,10 +38,13 @@ const Message = mongoose.model(
 )
 
 const app = express();
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(session({ secret: "cats", resave: false, saveUninitialized: true , cookie: { secure: false, maxAge: 14400000 }}));
+app.use(flash());
 passport.use(
   new LocalStrategy((username, password, done)=>{
     User.findOne({username:username}, (err, user)=>{
@@ -76,23 +81,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(function(req, res, next) {
-  res.locals.currentUser = req.user;
-  next();
-});
-
 app.get("/", function(req, res, next){
-  Message.find().populate("user").exec(function(err, message_list){
+  Message.find().exec(function(err, message_list){
     if(err){
       return next(err);
     }
-    res.render("index", {messages: message_list, format: distanceInWords});
+    res.render("index", {messages: message_list, format: distanceInWords, user: req.user});
   })
 });
 
-app.get("/sign-up", (req, res, next) => res.render("sign-up-form"));
+app.get("/sign-up", (req, res, next) => res.render("sign-up-form", {user:req.user}));
 
-app.get("/log-in", (req, res, next) => res.render("log-in-form"));
+app.get("/log-in", (req, res, next) => res.render("log-in-form", {user:req.user, messages: req.flash('error')}));
 
 app.get("/membership", function(req, res, next){
   res.render("membership-form", {user: req.user});
@@ -103,14 +103,12 @@ app.get('/new', function(req, res, next) {
 });
 
 app.get("/:id/delete", function(req, res, next){
-  res.render('delete-message', {messageId: req.params.id});
+  res.render('delete-message', {messageId: req.params.id, user:req.user});
 });
 
 app.post("/sign-up", [
   body("username")
-  .trim()
-  .isLength({min:6})
-  .escape()
+  .isLength({min:1})
   .withMessage("Username must be specified"),
   body("password")
   .isLength({min: 8})
@@ -125,7 +123,7 @@ app.post("/sign-up", [
   (req, res, next) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()){
-    res.render("sign-up-form", {error: errors.array()[0]})
+    res.render("sign-up-form", {error: errors.array()[0], user: req.user})
   }
   bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
     if(err){
@@ -151,14 +149,43 @@ app.post("/sign-up", [
   });
 }]);
 
-app.post( "/log-in", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/"
-})
-);
+var loginRequired = function(req, res, next) {
+  if ( req.isAuthenticated() ) {
+      next();
+      return
+  }
+  // Redirect here if logged in successfully
+  req.session.redirectTo = req.path;
+  res.redirect('/log-in')
+}
+
+app.post('/log-in', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+      if ( err ) {
+          next(err);
+          return
+      }
+      // User does not exist
+      if ( ! user ) {
+          req.flash('error', 'Invalid email or password');
+          res.redirect('/log-in');
+          return
+      }
+      req.logIn(user, function(err) {
+          // Invalid password
+          if ( err ) {
+              req.flash('error', 'Invalid email or password');
+              next(err);
+              return
+          }
+          res.redirect(req.session.redirectTo || '/');
+          return
+      });
+  })(req, res, next);
+});
 
 app.post("/membership", (req, res, next) => {
-  if(req.body.membershipAnswer == process.env.MEMBERSHIP){
+  if(req.body.membershipAnswer == process.env.MEMBERSHIP){ 
     User.findByIdAndUpdate(req.body.userId, {isMember: true}, function(err, user){
       if(err){
         console.log(err);
@@ -167,18 +194,19 @@ app.post("/membership", (req, res, next) => {
       res.redirect("/");
     });
   }else{
-    res.render("membership-form", {error: "Incorrect membership code"});
+    res.render("membership-form", {error: "Incorrect membership code", user: req.user});
   }
 });
 
 app.post('/new', function(req, res, next) {
-  let {messageText, userId} = req.body;
+  let {messageTitle, messageText, userId} = req.body;
   
   User.findById(userId).exec((err, foundUser)=>{
     if(err){
       return next(err);
     }
     let message = new Message({
+      messageTitle: messageTitle,
       messageText: messageText,
       date:new Date(),
       user: foundUser.username

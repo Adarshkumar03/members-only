@@ -1,10 +1,16 @@
 extends layout 
 
 block content
-    h1 please log in
-    form(action="/log-in" method="POST")
-      label(for="username") Username
-      input(name="username" placeholder="username" type="text")
-      label(for="password") Password
-      input(name="password" type="password")
-      button Log In
+    div(class="form-container")
+      div(class="form-header")
+        h1 Welcome 
+        p Hey, Enter your details to get sign in to your account
+      div(class="form")
+        form(action="/log-in" method="POST")
+          input(name="username" placeholder="Enter Username" type="text")
+          input(name="password" type="password", placeholder="Password")
+          button Log In
+          if messages    
+            p(class="error") #{messages}
+        p Don't have an account?<a class="sign-in-link" href="/sign-in">Sign in</a>  
+

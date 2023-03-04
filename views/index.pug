@@ -1,32 +1,34 @@
-extends layout 
+extends layout       
 
-block content 
-  if currentUser
-    if currentUser.isAdmin
-      h1 Welcome Back Admin
-    else 
-      h1 Welcome Back #{currentUser.username} 
-    each message in messages
-      if currentUser.isMember
-        h2 #{message.user}
+block content
+  
+  if user
+    div(class="main")
+      if user.isAdmin
+        h1 Welcome Back Admin, Messages
       else 
-        h2 Anonymous  
-      p #{message.messageText}
-      if currentUser.isMember
-        p #{format(message.date, {addSuffix: true})}
-      else 
-        p light years ago
-      if currentUser.isAdmin 
-        a(href="/"+message._id+"/delete") Delete Message  
-    a(href="/new") Create Message
-    if !currentUser.isMember
-      a(href="/membership") Become Member      
-    a(href="/log-out") LOG OUT
-
-  else 
-    h1 Home Page
-    p Join
-    a(href="/log-in") Login 
-    a(href="/sign-up") Signup    
+        h1 Messages 
+      each message in messages
+        div(class="message")
+          h2(class="message-title") #{message.messageTitle}
+          p(class="message-text") #{message.messageText}
+          if user.isMember
+            p(class="message-post-date") Post By <strong>#{message.user}</strong>, <span> #{format(message.date, {addSuffix: true})}</span>
+          else 
+            p(class="message-post-date") Post By <strong>Anonymous</strong>, light years ago
+            hr
+            p(class="message-note") <strong>Note:</strong> Become a member to know who wrote this message and when
+          if user.isAdmin 
+            a(href="/"+message._id+"/delete" class="delete") Delete Message      
+  else
+    div(class="landing") 
+      div(class="landing-content")  
+        h1 Members<span class="only">Only</span>
+        div(class="landing-content-subdiv")
+          p An exclusive clubhouse where members can write anonymous posts.
+          div(class="landing-content-links") 
+            a(href="/sign-up", class="link") Get Started Now
+      div(class="landing-image") 
+        img(src="/images/3024038.jpg", alt="", srcset="")        
     
   

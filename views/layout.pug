@@ -3,6 +3,43 @@ html(lang="en")
   head 
     title
     meta(charset="utf-8")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;300;400;600;700;900&display=swap" rel="stylesheet")
     link(rel="stylesheet", href="/stylesheets/style.css")
-  body 
-    block content  
+  body
+    header(class="header") 
+      a(href="/",class="logo") 
+        h1 Members<span class="only">Only<span> 
+      div 
+        ul(class="header-links")
+          if user 
+            if !user.isMember
+              li 
+                a(href="/membership",class="link") Become Member
+            li 
+              a(href="/new", class="link") Create Message
+            li        
+              div(class="dropdown")
+                ul(id="my-dropdown2")
+                  li
+                    p Signed in as 
+                    h3 #{user.username}
+                  li 
+                    p Membership Status 
+                      if user.isMember 
+                        h3 Member 
+                      else 
+                        h3 Not a Member
+                  li 
+                    a(href="/log-out", class="link") Log Out    
+                a(href="#my-dropdown2" aria-controls="my-dropdown2" role="button" data-toggle="dropdown" id="my-dropdown2-btn" class="dropdown-heading") Account
+                a(href="#my-dropdown2-btn" aria-controls="my-dropdown2" role="button" data-toggle="dropdown" class="close") Close dropdown   
+          else
+            li 
+              a(href="/log-in",class="link") Login
+            li 
+              a(href="/sign-up",class="link") Sign up   
+    block content
+    script(src="https://use.fontawesome.com/facf9fa52c.js") 
+    script(src="https://kit.fontawesome.com/8722da056d.js" crossorigin="anonymous") 

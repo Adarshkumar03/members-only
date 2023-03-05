@@ -90,7 +90,7 @@ app.get("/", function(req, res, next){
   })
 });
 
-app.get("/sign-up", (req, res, next) => res.render("sign-up-form", {user:req.user}));
+app.get("/sign-up", (req, res, next) => res.render("sign-up-form", {user:req.user, message: req.flash('error')}));
 
 app.get("/log-in", (req, res, next) => res.render("log-in-form", {user:req.user, messages: req.flash('error')}));
 
@@ -125,28 +125,40 @@ app.post("/sign-up", [
   if(!errors.isEmpty()){
     res.render("sign-up-form", {error: errors.array()[0], user: req.user})
   }
-  bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
-    if(err){
-      return next(err);
-    }
-    const user = new User({
-      username: req.body.username,
-      password: hashedPassword,
-    });
-    if(user.username == process.env.ADMIN_NAME){
-      user.isAdmin = true;
-      user.isMember = true;
-    }else{
-      user.isAdmin = false;
-      user.isMember=false;
-    }
-    user.save(err => {
-      if(err){
-        return next(err);
+  User.findOne({
+    username: req.body.username
+  }, function(err, user) {
+    if (err) {
+        return err
+    } else if (user) {
+        //user.message = "User already exists!!"
+        req.flash('error', "User already exists!!");
+        res.render("sign-up-form", {messages: req.flash('error')});
+    } else {
+      bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
+        if(err){
+          return next(err);
+        }
+        const user = new User({
+          username: req.body.username,
+          password: hashedPassword,
+        });
+        if(user.username == process.env.ADMIN_NAME){
+          user.isAdmin = true;
+          user.isMember = true;
+        }else{
+          user.isAdmin = false;
+          user.isMember=false;
+        }
+        user.save(err => {
+          if(err){
+            return next(err);
+          }
+          res.redirect("/");
+        })
+      });
       }
-      res.redirect("/");
-    })
-  });
+   });
 }]);
 
 var loginRequired = function(req, res, next) {

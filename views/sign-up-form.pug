@@ -13,6 +13,8 @@ block content
         button Sign Up
         if error    
           p(class="error") #{error.msg}
+        else if messages
+          p(class="error") #{messages} 
       p Already have an account?<a class="sign-in-link" href="/login">Login</a>    
       
 

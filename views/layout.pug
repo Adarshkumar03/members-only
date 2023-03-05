@@ -19,22 +19,22 @@ html(lang="en")
                 a(href="/membership",class="link") Become Member
             li 
               a(href="/new", class="link") Create Message
-            li        
-              div(class="dropdown")
-                ul(id="my-dropdown2")
-                  li
-                    p Signed in as 
-                    h3 #{user.username}
+            li
+             div(class="dropdown") 
+              input(type="checkbox" id="my-dropdown" value="" name="my-checkbox")
+              label(for="my-dropdown" data-toggle="dropdown" class="dropdown-heading") Account
+              ul
+                li
+                  p Signed in as 
+                  h3 #{user.username}
+                li 
+                  p Membership Status 
+                  if user.isMember 
+                    h3 Member 
+                  else 
+                    h3 Not a Member
                   li 
-                    p Membership Status 
-                      if user.isMember 
-                        h3 Member 
-                      else 
-                        h3 Not a Member
-                  li 
-                    a(href="/log-out", class="link") Log Out    
-                a(href="#my-dropdown2" aria-controls="my-dropdown2" role="button" data-toggle="dropdown" id="my-dropdown2-btn" class="dropdown-heading") Account
-                a(href="#my-dropdown2-btn" aria-controls="my-dropdown2" role="button" data-toggle="dropdown" class="close") Close dropdown   
+                    a(href="/log-out", class="link") Log Out
           else
             li 
               a(href="/log-in",class="link") Login

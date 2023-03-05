@@ -72,6 +72,11 @@ a{
   background-clip: padding-box, border-box;
 }
 
+.dropdown > input[type="checkbox"] {
+  position: absolute;
+  left: -100vw;
+}
+
 .dropdown > label,
 .dropdown > a[role="button"] {
   display: inline-block;

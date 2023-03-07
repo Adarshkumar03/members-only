@@ -488,4 +488,10 @@ a{
   background-color: #F71735;
 }
 
+.danger{
+  margin:15px auto 0;
+  color:#fe9920;
+  font-size:15px;
+}
+
 

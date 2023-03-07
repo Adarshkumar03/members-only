@@ -11,10 +11,8 @@ block content
         input(name="password" type="password" placeholder="Enter password" required)
         input(name="confirmPassword" type="password" placeholder="Confirm passowrd" required)
         button Sign Up
-        if error    
-          p(class="error") #{error.msg}
-        else if messages
-          p(class="error") #{messages} 
+        if message
+          p(class="error") #{message} 
       p Already have an account?<a class="sign-in-link" href="/login">Login</a>    
       
 

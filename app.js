@@ -90,7 +90,7 @@ app.get("/", function(req, res, next){
   })
 });
 
-app.get("/sign-up", (req, res, next) => res.render("sign-up-form", {user:req.user, message: req.flash('error')}));
+app.get("/sign-up", (req, res, next) => res.render("sign-up-form", {message: req.flash('error')}));
 
 app.get("/log-in", (req, res, next) => res.render("log-in-form", {user:req.user, messages: req.flash('error')}));
 
@@ -123,7 +123,9 @@ app.post("/sign-up", [
   (req, res, next) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()){
-    res.render("sign-up-form", {error: errors.array()[0], user: req.user})
+    req.flash('error', errors.array()[0].msg);
+    res.render("sign-up-form", {message: req.flash("error")});
+    return;
   }
   User.findOne({
     username: req.body.username
@@ -133,7 +135,7 @@ app.post("/sign-up", [
     } else if (user) {
         //user.message = "User already exists!!"
         req.flash('error', "User already exists!!");
-        res.render("sign-up-form", {messages: req.flash('error')});
+        res.redirect("/sign-up");
     } else {
       bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
         if(err){
@@ -253,4 +255,4 @@ app.get("/log-out", (req, res, next)=>{
 
 const PORT = process.env.PORT || 3030;
 
-app.listen(PORT, () => console.log("app listening on port 3000!"));
+app.listen(PORT, () => console.log("app listening on port 3030!"));

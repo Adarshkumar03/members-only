@@ -5,9 +5,9 @@ block content
   if user
     div(class="main")
       if user.isAdmin
-        h1 Welcome Back Admin, Messages
+        h1 Welcome Back Admin, Posts
       else 
-        h1 Messages 
+        h1 Posts 
       each message in messages
         div(class="message")
           h2(class="message-title") #{message.messageTitle}

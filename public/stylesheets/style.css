@@ -20,7 +20,7 @@ a{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #799796; 
+  border-bottom: 2px double #799796; 
   padding:10px 100px;
 }
 
@@ -194,7 +194,7 @@ a{
   font-size: 18px;
   font-weight: 400;
   color:#000538;
-  word-spacing:0.8rem;
+  word-spacing:0.5rem;
 }
 
 .landing-content-links{

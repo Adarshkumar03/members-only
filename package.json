@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -19,10 +20,12 @@
     "express-session": "^1.17.3",
     "express-validator": "^6.15.0",
     "mongoose": "^6.8.3",
-    "nodemon": "^2.0.20",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pug": "^3.0.2",
     "session": "^0.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

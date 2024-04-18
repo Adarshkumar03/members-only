@@ -57,6 +57,6 @@ PORT=any_port
 
 ![Home](public/images/home.png)
 
-### Mood Tracker
+### Membership
 
 ![Member](public/images/become-member.png)

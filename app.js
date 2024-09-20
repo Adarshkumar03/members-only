@@ -2,7 +2,7 @@ require("dotenv/config");
 const bcrypt = require("bcryptjs");
 const express = require("express");
 const path = require("path");
-const session = require("cookie-session");
+const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const distanceInWords = require("date-fns/formatDistanceToNow");
@@ -158,7 +158,6 @@ app.post("/sign-up", [
         } else {
           bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
             if (err) {
-              console.log("Inside bcrypt error section");
               return next(err);
             }
             const user = new User({
@@ -174,7 +173,6 @@ app.post("/sign-up", [
             }
             user.save((err) => {
               if (err) {
-                console.log("In sign-up post error section");
                 return next(err);
               }
               res.redirect("/log-in");
@@ -225,12 +223,11 @@ app.post("/membership", (req, res, next) => {
   if (req.body.membershipAnswer == process.env.MEMBERSHIP) {
     User.findByIdAndUpdate(
       req.body.userId,
-      { isMember: true }, 
+      { isMember: true },
       function (err, user) {
         if (err) {
           console.log(err);
         }
-        console.log("Updated membership status : ", user);
         res.redirect("/");
       }
     );
@@ -269,7 +266,6 @@ app.post("/:id/delete", function (req, res, next) {
     if (err) {
       return next(err);
     }
-    console.log("Message deleted successfully!!");
     res.redirect("/");
   });
 });
@@ -285,4 +281,4 @@ app.get("/log-out", (req, res, next) => {
 
 const PORT = process.env.PORT || 3030;
 
-app.listen(PORT, () => console.log("app listening on port 3030!"));
+app.listen(PORT, () => console.log(`app listening on port ${PORT}!`));

@@ -12,8 +12,9 @@ block content
         div(class="message")
           h2(class="message-title") #{message.messageTitle}
           p(class="message-text") #{message.messageText}
-          if user.isMember
-            p(class="message-post-date") Post By <strong>#{message.user}</strong>, <span> #{format(message.date, {addSuffix: true})}</span>
+          if user.isMember || user.username == message.user
+            p(class="message-post-date") Post By <strong>#{message.user}</strong>, 
+            span #{message.date ? format(message.date, {addSuffix: true}) : 'Unknown date'}
           else 
             p(class="message-post-date") Post By <strong>Anonymous</strong>, light years ago
             hr
@@ -29,6 +30,4 @@ block content
           div(class="landing-content-links") 
             a(href="/sign-up", class="link") Get Started Now
       div(class="landing-image") 
-        img(src="/images/3024038.jpg", alt="", srcset="")        
-    
-  
+        img(src="/images/3024038.jpg", alt="Exclusive Clubhouse Image")   

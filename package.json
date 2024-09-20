@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
-    "build":"webpack"
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
-    "cookie-session": "^2.0.0",
+    "cookie-session": "^2.1.0",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
